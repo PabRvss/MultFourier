@@ -1,0 +1,28 @@
+{
+    "id": "C043A82B",
+    "path": "C:/Projects/PRACTICE/MultFourier/man/MultFourier-package.Rd",
+    "project_path": "man/MultFourier-package.Rd",
+    "type": "r_doc",
+    "hash": "452262260",
+    "contents": "",
+    "dirty": false,
+    "created": 1741798117240.0,
+    "source_on_save": false,
+    "relative_order": 6,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "46,1",
+        "scrollLine": "26"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1741798333,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1741798333409,
+    "read_only": true,
+    "read_only_alternatives": [
+        "R/multfourier-package.R"
+    ]
+}
