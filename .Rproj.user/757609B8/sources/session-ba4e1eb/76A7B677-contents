@@ -34,7 +34,7 @@
 #'
 #' @seealso
 #' \itemize{
-#'   \item Report bugs at \url{https://github.com/yourusername/MultFourier/issues}
+#'   \item Report bugs at \url{https://github.com/PabRvss/MultFourier/issues}
 #' }
 #'
 #' @name MultFourier-package

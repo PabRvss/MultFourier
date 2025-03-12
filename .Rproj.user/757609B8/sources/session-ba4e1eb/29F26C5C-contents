@@ -33,15 +33,16 @@
 // gamma optimization with OpenCL
 // enumeration recursive -> iterative
 
+// Initialize the lgac array for factorial calculations
 extern void init_ext(int_t fact_max, int_t verbose_ext) {
-  if (lgac!=NULL) free(lgac);
+  if (lgac != NULL) free(lgac);
 
-  lgac = malloc(fact_max*sizeof(real_t));
+  lgac = malloc(fact_max * sizeof(real_t));
   lgac[0] = 0;
 
   double s = 0;
   double d = 0;
-  for (size_t i=1; i <= fact_max; i++) {
+  for (size_t i = 1; i <= fact_max; i++) {
     double l = log((double)i);
 
     double y = l - d;
@@ -52,6 +53,7 @@ extern void init_ext(int_t fact_max, int_t verbose_ext) {
   }
 }
 
+// Clean up and free the lgac array
 extern void finish() {
   if (lgac) {
     free(lgac);
@@ -59,7 +61,7 @@ extern void finish() {
   }
 }
 
-
+// Main internal function to compute p-values
 extern void main_int(
     const int_t N, const int_t K,
     const int_t* x0, const real_t* probs,
@@ -71,14 +73,13 @@ extern void main_int(
 
   if (verbose) {
     printf("p = [");
-    //        for (int_t k=0; k<K; k++) printf("%.8f, ", probs[k]);
     for (int_t k = 0; k < K; k++) printf("%.8f ", probs[k]);
     printf("]\n");
     printf("x0 = [");
     for (int_t k = 0; k < K; k++) printf("%lld, ", x0[k]);
     printf("]\n");
     printf("expected = [");
-    for (int_t k = 0; k < K; k++) printf("%.3f, ", N*probs[k]);
+    for (int_t k = 0; k < K; k++) printf("%.3f, ", N * probs[k]);
     printf("]\n");
     printf("N = %lld\n", N);
     printf("K = %lld\n", K);
@@ -116,8 +117,8 @@ extern void main_int(
   timespec_get(&t1, TIME_UTC);
   printf("CL init time: %.6f seconds\n", get_dt(t0, t1));
 
-  result_cl_t* res = malloc(GROUPS*sizeof(result_cl_t));
-  double* res_double = malloc(GROUPS*sizeof(double));
+  result_cl_t* res = malloc(GROUPS * sizeof(result_cl_t));
+  double* res_double = malloc(GROUPS * sizeof(double));
   calculate_multinomial_cl(0, mult_cl, res, res_double);
   free_multinomial_cl(mult_cl);
 
@@ -134,6 +135,7 @@ extern void main_int(
   mult = NULL;
 }
 
+// External function to compute p-values
 extern void main_ext(
     const int_t N, const int_t K,
     const int_t* x0, const real_t* probs,
@@ -161,6 +163,7 @@ extern void main_ext(
   free(mult_res);
 }
 
+// R interface for the flexible p-value computation
 extern SEXP pval_flexible(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
                           SEXP rel_eps, SEXP undersampling, SEXP verbose) {
   // Converts parameters to int64_t and double
@@ -172,7 +175,7 @@ extern SEXP pval_flexible(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   int64_t verbose_val = (int64_t) REAL(verbose)[0];  // Converts to int_t
 
   // Convert x0 to an int64_t array
-  int64_t *x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
+  int64_t* x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
   if (x0_ptr == NULL) {
     error("Error: Failed to allocate memory for x0.");
   }
@@ -181,7 +184,7 @@ extern SEXP pval_flexible(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   }
 
   // Convert probs to a double array
-  double *probs_ptr = (double*) malloc(k * sizeof(double));
+  double* probs_ptr = (double*) malloc(k * sizeof(double));
   if (probs_ptr == NULL) {
     free(x0_ptr);
     error("Error: Failed to allocate memory for probs.");
@@ -221,7 +224,7 @@ extern SEXP pval_flexible(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   return result;
 }
 
-// Función que utiliza exclusivamente el método exhaustive
+// Function to force the use of the exhaustive method
 extern void main_exhaustive(
     const int_t N, const int_t K,
     const int_t* x0, const real_t* probs,
@@ -239,8 +242,8 @@ extern void main_exhaustive(
   set_options(&options, rel_eps, max_terms, undersampling, 1e-2, 6.5, 8, 1,
               verbose, 10);
 
-  // Forzar el uso del método exhaustive
-  options.enum_cutoff = INFINITY;  // Esto asegura que siempre se use exhaustive
+  // Force the use of the exhaustive method
+  options.enum_cutoff = INFINITY;  // This ensures that the exhaustive method is always used
 
   main_int(N, K, x0, probs, mult_res, &options);
 
@@ -252,7 +255,7 @@ extern void main_exhaustive(
   free(mult_res);
 }
 
-// Función que utiliza exclusivamente el método series
+// Function to force the use of the series method
 extern void main_series(
     const int_t N, const int_t K,
     const int_t* x0, const real_t* probs,
@@ -270,8 +273,8 @@ extern void main_series(
   set_options(&options, rel_eps, max_terms, undersampling, 1e-2, 6.5, 8, 1,
               verbose, 10);
 
-  // Forzar el uso del método series
-  options.enum_cutoff = -INFINITY;  // Esto asegura que siempre se use series
+  // Force the use of the series method
+  options.enum_cutoff = -INFINITY;  // This ensures that the series method is always used
 
   main_int(N, K, x0, probs, mult_res, &options);
 
@@ -283,10 +286,10 @@ extern void main_series(
   free(mult_res);
 }
 
-// Funciones R que llaman a las nuevas funciones C
+// R interface for the exhaustive p-value computation
 extern SEXP pval_exhaustive(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
                             SEXP rel_eps, SEXP undersampling, SEXP verbose) {
-  // Convierte los parámetros a int64_t y double
+  // Convert parameters to int64_t and double
   int64_t n = (int64_t) REAL(N)[0];
   int64_t k = (int64_t) REAL(K)[0];
   real_t rel_eps_val = REAL(rel_eps)[0];
@@ -294,8 +297,8 @@ extern SEXP pval_exhaustive(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   real_t undersampling_val = REAL(undersampling)[0];
   int64_t verbose_val = (int64_t) REAL(verbose)[0];
 
-  // Convierte x0 a un array de int64_t
-  int64_t *x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
+  // Convert x0 to an int64_t array
+  int64_t* x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
   if (x0_ptr == NULL) {
     error("Error: Failed to allocate memory for x0.");
   }
@@ -303,8 +306,8 @@ extern SEXP pval_exhaustive(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
     x0_ptr[i] = (int64_t) REAL(x0)[i];
   }
 
-  // Convierte probs a un array de double
-  double *probs_ptr = (double*) malloc(k * sizeof(double));
+  // Convert probs to a double array
+  double* probs_ptr = (double*) malloc(k * sizeof(double));
   if (probs_ptr == NULL) {
     free(x0_ptr);
     error("Error: Failed to allocate memory for probs.");
@@ -313,27 +316,27 @@ extern SEXP pval_exhaustive(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
     probs_ptr[i] = REAL(probs)[i];
   }
 
-  // Inicializa lgac
+  // Initialize lgac
   init_ext(n + k, 1);
 
-  // Variables de salida
+  // Output variables
   double p_value;
   int64_t converged;
   int64_t terms;
   double p0;
 
-  // Llama a la función C que usa exhaustive
+  // Call the C function that uses the exhaustive method
   main_exhaustive(n, k, x0_ptr, probs_ptr, &p_value, &converged, &terms, &p0,
                   rel_eps_val, max_terms_val, undersampling_val, verbose_val);
 
-  // Libera la memoria asignada
+  // Free allocated memory
   free(x0_ptr);
   free(probs_ptr);
 
-  // Finaliza
+  // Finalize
   finish();
 
-  // Crea una lista R con los resultados
+  // Create an R list with the results
   SEXP result = PROTECT(allocVector(VECSXP, 4));
   SET_VECTOR_ELT(result, 0, ScalarReal(p_value));
   SET_VECTOR_ELT(result, 1, ScalarInteger(converged));
@@ -344,9 +347,10 @@ extern SEXP pval_exhaustive(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   return result;
 }
 
+// R interface for the series p-value computation
 extern SEXP pval_series(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
                         SEXP rel_eps, SEXP undersampling, SEXP verbose) {
-  // Convierte los parámetros a int64_t y double
+  // Convert parameters to int64_t and double
   int64_t n = (int64_t) REAL(N)[0];
   int64_t k = (int64_t) REAL(K)[0];
   real_t rel_eps_val = REAL(rel_eps)[0];
@@ -354,8 +358,8 @@ extern SEXP pval_series(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
   real_t undersampling_val = REAL(undersampling)[0];
   int64_t verbose_val = (int64_t) REAL(verbose)[0];
 
-  // Convierte x0 a un array de int64_t
-  int64_t *x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
+  // Convert x0 to an int64_t array
+  int64_t* x0_ptr = (int64_t*) malloc(k * sizeof(int64_t));
   if (x0_ptr == NULL) {
     error("Error: Failed to allocate memory for x0.");
   }
@@ -363,8 +367,8 @@ extern SEXP pval_series(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
     x0_ptr[i] = (int64_t) REAL(x0)[i];
   }
 
-  // Convierte probs a un array de double
-  double *probs_ptr = (double*) malloc(k * sizeof(double));
+  // Convert probs to a double array
+  double* probs_ptr = (double*) malloc(k * sizeof(double));
   if (probs_ptr == NULL) {
     free(x0_ptr);
     error("Error: Failed to allocate memory for probs.");
@@ -373,27 +377,27 @@ extern SEXP pval_series(SEXP N, SEXP K, SEXP x0, SEXP probs, SEXP max_terms,
     probs_ptr[i] = REAL(probs)[i];
   }
 
-  // Inicializa lgac
+  // Initialize lgac
   init_ext(n + k, 1);
 
-  // Variables de salida
+  // Output variables
   double p_value;
   int64_t converged;
   int64_t terms;
   double p0;
 
-  // Llama a la función C que usa series
+  // Call the C function that uses the series method
   main_series(n, k, x0_ptr, probs_ptr, &p_value, &converged, &terms, &p0,
               rel_eps_val, max_terms_val, undersampling_val, verbose_val);
 
-  // Libera la memoria asignada
+  // Free allocated memory
   free(x0_ptr);
   free(probs_ptr);
 
-  // Finaliza
+  // Finalize
   finish();
 
-  // Crea una lista R con los resultados
+  // Create an R list with the results
   SEXP result = PROTECT(allocVector(VECSXP, 4));
   SET_VECTOR_ELT(result, 0, ScalarReal(p_value));
   SET_VECTOR_ELT(result, 1, ScalarInteger(converged));

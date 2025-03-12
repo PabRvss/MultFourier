@@ -42,7 +42,17 @@ Key features:
 }
 \seealso{
 \itemize{
-  \item Report bugs at \url{https://github.com/yourusername/MultFourier/issues}
+  \item Report bugs at \url{https://github.com/PabRvss/MultFourier/issues}
 }
+}
+\author{
+\strong{Maintainer}: Pablo Rivas \email{pablo.rivas.g@ug.uchile.cl}
+
+Authors:
+\itemize{
+  \item Charles Thraves
+  \item Felipe Subiabre
+}
+
 }
 \keyword{package}
