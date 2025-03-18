@@ -1,6 +1,6 @@
 Package: MultFourier
 Type: Package
-Title: Calculation of p-values for a Multinomial Distribution
+Title: Computes the p-values for Multinomial Goodness-of-fit tests
 Version: 1.0
 Author: Charles Thraves, Pablo Rivas, Felipe Subiabre
 Maintainer: Pablo Rivas <pablo.rivas.g@ug.uchile.cl>
@@ -9,12 +9,12 @@ Authors@R:
       person("Pablo", "Rivas", role = c("aut", "cre"), email = "pablo.rivas.g@ug.uchile.cl"),
       person("Felipe", "Subiabre", role = "aut"))
 Description: 
-    Computes both approximated and exact p-values for multinomial goodness-of-fit 
-    tests based on multiple test statistics, including the logP test, Pearson's 
-    chi-square, and the log-likelihood ratio statistic. The exact p-value is 
-    computed using an exhaustive algorithm recommended for small datasets, while 
-    an approximation is provided using a Fourier series algorithm for larger 
-    datasets.
+    Computes the p-value for an exact Multinomial, Pearson's Chi-Squared, 
+    log-likelihood ratio, or Power-Divergence tests. The main function,
+    pval_fourier, uses a Fourier series expansion. Also, the library provides an
+    exhaustive method pval_exhaustive, which evaluates all elements within the 
+    support of the Multinomial distribution. The function pval_flexible uses 
+    either of these methods, depending on the size of the instance.
 License: GPL (>= 2)
 RoxygenNote: 7.3.2
 Encoding: UTF-8

@@ -6,7 +6,7 @@
 \alias{MultFourier}
 \title{MultFourier: Efficient Computation of Multinomial Test p-values}
 \description{
-Computes both approximated and exact p-values for multinomial goodness-of-fit tests based on multiple test statistics, including the logP test, Pearson's chi-square, and the log-likelihood ratio statistic. The exact p-value is computed using an exhaustive algorithm recommended for small datasets, while an approximation is provided using a Fourier series algorithm for larger datasets.
+Computes the p-value for an exact Multinomial, Pearson's Chi-Squared, log-likelihood ratio, or Power-Divergence tests. The main function, pval_fourier, uses a Fourier series expansion. Also, the library provides an exhaustive method pval_exhaustive, which evaluates all elements within the support of the Multinomial distribution. The function pval_flexible uses either of these methods, depending on the size of the instance.
 }
 \details{
 The \code{MultFourier} package provides efficient methods for computing p-values
@@ -44,5 +44,15 @@ Key features:
 \itemize{
   \item Report bugs at \url{https://github.com/PabRvss/MultFourier/issues}
 }
+}
+\author{
+\strong{Maintainer}: Pablo Rivas \email{pablo.rivas.g@ug.uchile.cl}
+
+Authors:
+\itemize{
+  \item Charles Thraves
+  \item Felipe Subiabre
+}
+
 }
 \keyword{package}

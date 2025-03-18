@@ -2,7 +2,7 @@
 % Please edit documentation in R/pvalues.R
 \name{pval_fourier}
 \alias{pval_fourier}
-\title{Compute p-value using the Fourier Method}
+\title{Compute p-value using Fourier method}
 \usage{
 pval_fourier(
   x,
@@ -19,11 +19,11 @@ pval_fourier(
 \arguments{
 \item{x}{An Integer vector with realizations for each category.}
 
-\item{p}{A Numeric vector with the probabilities for each category. These should be non-negative and sum to one. It should be the same size as `x`.}
+\item{p}{A Numeric vector with the probabilities for each category. These should be non-negative and sum to one. It should be the same size as ‘\code{x}’.}
 
-\item{stat}{String with the name of the statistic to compute. If `"prob"`, the exact Multinomial p-value is computed. If `"pearson"`, the Pearson's Chi-square p-value is computed. If `"llr"`, the log-likelihood ratio p-value is computed. If `"power_div"`, a Power Divergence p-value is computed, in which case a `lambda` parameter must be given. The default value is `"prob"`.}
+\item{stat}{String with the name of the statistic to compute. If ‘\code{prob}’, the exact Multinomial p-value is computed. If ‘\code{pearson}’, the Pearson's Chi-square p-value is computed. If ‘\code{llr}’, the log-likelihood ratio p-value is computed. If ‘\code{power_div}’, a Power Divergence p-value is computed, in which case a ‘\code{lambda}’ parameter must be given. The default value is ‘\code{prob}’.}
 
-\item{lambda}{A Numeric with the lambda value of the Power Divergence statistic. Only works if `stat = "power_div"`, otherwise is ignored.}
+\item{lambda}{A Numeric with the lambda value of the Power-Divergence statistic. Only works if \code{stat} = ‘\code{power_div}’, otherwise is ignored.}
 
 \item{max_time}{A Numeric with the maximum time limit in seconds. The default is 600.}
 
@@ -33,33 +33,38 @@ pval_fourier(
 
 \item{undersampling}{An Integer with the undersampling value to use. The default and recommended value is 1. Values greater than one will speed up calculations but will sacrifice precision.}
 
-\item{verbose}{Boolean. If `TRUE`, it prints intermediate results every 10 terms. If `FALSE`, it does not print intermediate computations. The default is `FALSE`.}
+\item{verbose}{Boolean. If ‘\code{TRUE}’, it prints intermediate results every 10 terms. If ‘\code{FALSE}’, it does not print intermediate computations. The default is ‘\code{FALSE}’.}
 }
 \value{
-Returns a `MultF` object with the following attributes:
+Returns a ‘\code{S3}’ object with the following attributes:
 \itemize{
-  \item `x`: The input vector of the observed realizations for each category.
-  \item `p`: The input vector of the probabilities for each category.
-  \item `pval`: The p-value computed.
-  \item `gamma`: The optimal gamma obtained in the first part of the method.
-  \item `n_terms`: The number of terms of the Fourier sum.
-  \item `time`: The total execution time of the algorithm in seconds.
-  \item `p0`: Probability mass function in `x`.
-  \item `status`: The final status ID of the algorithm upon completion:
+  \item ‘x’: The input vector of the observed realizations for each category.
+  \item ‘p’: The input vector of the probabilities for each category.
+  \item ‘pval’: The p-value computed.
+  \item ‘gamma’: The optimal gamma obtained in the first part of the method.
+  \item ‘n_terms’: The number of terms of the Fourier sum.
+  \item ‘time’: The total execution time of the algorithm in seconds.
+  \item ‘p0’: Probability mass function in `x`.
+  \item ‘status’: The final status ID of the algorithm upon completion:
     \itemize{
-      \item `0`: Converged.
-      \item `1`: Maximum time reached.
-      \item `2`: Maximum number of terms reached.
-      \item `3`: Could not solve the optimization of gamma.
+      \item ‘0’: Converged.
+      \item ‘1’: Maximum time reached.
+      \item ‘2’: Maximum number of terms reached.
+      \item ‘3’: Could not solve the optimization of gamma.
     }
-  \item `message`: The finishing status displayed as a message.
-  \item `method`: A String with value `"fourier"`.
+  \item ‘message’: The finishing status displayed as a message.
+  \item ‘method’: A String with value ‘fourier’.
 }
 }
 \description{
-This function calculates the p-value for a multinomial test using the Fourier series method,
-which approximates the p-value using a Fourier series expansion. This method is
-more efficient for large datasets but may introduce some approximation error.
+This function computes the p-value for an exact Multinomial, Pearson's
+Chi-Squared, log-likelihood ratio, or Power-Divergence tests. It uses a
+Fourier series expansion. The infinite sum is truncated if any of the
+following happens: (i) runtime exceeds max_time seconds, (ii) the modulus of
+o between the new sum term and the cumulative sum is less than rel_eps for
+the last 40 iterations, or (iii) the number of terms of the sums is equal to
+max_terms. The function allows to perform undersampling, but it is not
+recommended for every instance.
 }
 \examples{
 # Example 1: Compute p-value using the Fourier method
