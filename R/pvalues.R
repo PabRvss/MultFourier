@@ -1,4 +1,3 @@
-dyn.load("src/pvalues.so")
 library(bit64)
 
 #' Compute p-value for a Multinomial Test

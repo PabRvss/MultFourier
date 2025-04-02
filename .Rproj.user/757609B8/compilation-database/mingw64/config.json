@@ -2,6 +2,7 @@
     "args": [
         "-IC:/PROGRA~1/R/R-44~1.2/include",
         "-DNDEBUG",
+        "-fopenmp",
         "-DEIGEN_DONT_VECTORIZE",
         "-nostdinc",
         "-Ic:/rbuild~1/4.4/x86_64~1.pos/bin/../lib/gcc/x86_64-w64-mingw32.static.posix/13.3.0/include/c++",
@@ -15,7 +16,7 @@
     ],
     "pch": "",
     "is_cpp": false,
-    "hash": "1741782439",
+    "hash": "174230429017424971201742487788",
     "compiler": "14560070257236426505",
     "rversion": "4.4.2",
     "dbversion": 4
